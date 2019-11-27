@@ -6,7 +6,7 @@ hello
 import json
 import numpy as np
 
-filename = '../Kinect/Kinect/result.json'
+filename = './result_output2.json'
 
 with open(filename,'r') as f:
     data = json.load(f)
