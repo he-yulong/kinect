@@ -25,7 +25,7 @@ int main()
 	//openCamera();
 	//openTracker();
 	//getTrackResults();
-	process("20191126.mkv", "result.json");
+	process("data/output4.mkv", "result_output4_smooth0.75.json");
 
 
 

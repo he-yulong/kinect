@@ -109,6 +109,8 @@ bool process_mkv_offline(const char* input_path, const char* output_path)
 		cerr << "Body tracker initialization failed!" << endl;
 		return false;
 	}
+	
+	k4abt_tracker_set_temporal_smoothing(tracker, 0.75);
 
 	json json_output;
 	json_output["k4abt_sdk_version"] = K4ABT_VERSION_STR;
