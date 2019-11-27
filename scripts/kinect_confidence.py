@@ -5,7 +5,7 @@ import os
 import argparse
 import math
 import time
-import cv2
+# import cv2
 import numpy as np
 from plot_3d import Visual3D
 
@@ -107,12 +107,12 @@ class OcclusionAwarer:
         self.v3d2 = Visual3D()
         # self.v3d3 = Visual3D()
 
-    def get_frame(self):
-        self.frame = cv2.imread(self.images[self.frame_idx])
-        return self.frame
-
-    def get_gray_frame(self):
-        return cv2.cvtColor(self.get_frame(), cv2.COLOR_BGR2GRAY)
+    # def get_frame(self):
+    #     self.frame = cv2.imread(self.images[self.frame_idx])
+    #     return self.frame
+    #
+    # def get_gray_frame(self):
+    #     return cv2.cvtColor(self.get_frame(), cv2.COLOR_BGR2GRAY)
 
     def get_frame_keypoints(self, type):
         if type == 'int':
@@ -161,9 +161,9 @@ class OcclusionAwarer:
         self.v3d2.plot_3d(self.curr_frame_keypoints_float[0, :, :3], self.curr_frame_keypoints_float[0, :, 3])
         print('-' * 10)
         # cv2.imshow('loaded image', color_frame)
-        if (cv2.waitKey(1) & 0xFF) == ord('q'):
-            self.close()
-            exit(0)
+        # if (cv2.waitKey(1) & 0xFF) == ord('q'):
+        #     self.close()
+        #     exit(0)
 
         print('#' * 40)
 
