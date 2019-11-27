@@ -6,7 +6,7 @@ hello
 import json
 import numpy as np
 
-filename = './result_output2.json'
+filename = './result_output4_smooth1.0.json'
 
 with open(filename,'r') as f:
     data = json.load(f)

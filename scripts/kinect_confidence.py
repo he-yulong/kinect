@@ -3,6 +3,7 @@ Using kinect's own confidence
 """
 import os
 import argparse
+import json
 import math
 import time
 # import cv2
@@ -104,7 +105,7 @@ class OcclusionAwarer:
         self.diff_list = []
 
         self.v3d1 = Visual3D()
-        self.v3d2 = Visual3D()
+        # self.v3d2 = Visual3D()
         # self.v3d3 = Visual3D()
 
     # def get_frame(self):
@@ -158,7 +159,7 @@ class OcclusionAwarer:
         all_good_confidence = self.curr_frame_keypoints_float[0, :, 3].copy()
         all_good_confidence.fill(4.0)
         self.v3d1.plot_3d(self.curr_frame_keypoints_float[0, :, :3], all_good_confidence)
-        self.v3d2.plot_3d(self.curr_frame_keypoints_float[0, :, :3], self.curr_frame_keypoints_float[0, :, 3])
+        # self.v3d2.plot_3d(self.curr_frame_keypoints_float[0, :, :3], self.curr_frame_keypoints_float[0, :, 3])
         print('-' * 10)
         # cv2.imshow('loaded image', color_frame)
         # if (cv2.waitKey(1) & 0xFF) == ord('q'):
@@ -186,20 +187,49 @@ class OcclusionAwarer:
 
     def is_empty(self):
         # return self.frame_idx == min(len(self.images), len(self.keypoints)) - 3
-        return self.frame_idx == 600
+        return self.frame_idx == 900
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--image_dir', default='./data/20191126/', help='image directory.')
+    parser.add_argument('--json_filename', default='./result_output4_smooth1.0.json', help='json filename.')
     parser.add_argument("--output_path", default='./result.mp4', help="path to the video file to write")
     args = parser.parse_args()
+
+    with open(args.json_filename, 'r') as f:
+        data = json.load(f)
+
+    print(data.keys())
+    body_per_frame = data['frames'][120]
+    print(body_per_frame['bodies'][0].keys())
+
+    pos = []
+    confidence = []
+
+    for bodies_per_frame in data['frames']:
+        if bodies_per_frame['bodies']:
+            body = bodies_per_frame['bodies'][0]
+            # print(body.keys())
+            # print(body['body_id'])
+            # print(body['joint_orientations'])
+            # print(body['joint_positions'])
+            # print(body['joint_confidence'])
+            pos.append(body['joint_positions'])
+
+            confidence.append(body['joint_confidence'])
+        else:
+            pos.append(np.zeros((32, 3)).tolist())
+            confidence.append(np.zeros((32, 1)).tolist())
+
+    pos_data = np.array(pos).reshape((-1, 32, 3))
+    confidence_data = np.array(confidence).reshape((-1, 32, 1))
 
     # get image path
     # image_path = get_image_path(args.image_dir)
     image_path = None
     # get keypoints data
-    keypoints = np.load(args.image_dir + 'parsed_data.npy')
+    keypoints = np.concatenate((pos_data, confidence_data), axis=2)
 
     awarer = OcclusionAwarer(image_path, keypoints)
 
